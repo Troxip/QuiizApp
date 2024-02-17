@@ -3,12 +3,7 @@ import Answers from "./Answers";
 import QuestionTimer from "./QuestionTimer";
 import QUESTIONS from "../questions.js";
 
-export default function Question({
-  key,
-  onSelectAnswer,
-  selectedAnswer,
-  onSkipAnswer,
-}) {
+export default function Question({ index, onSelectAnswer, onSkipAnswer }) {
   const [answer, setAnswer] = useState({
     selectedAnswer: "",
     isCorrect: null,
@@ -20,7 +15,7 @@ export default function Question({
     setTimeout(() => {
       setAnswer({
         selectedAnswer: answer,
-        isCorrect: QUESTIONS[key].answers[0] === answer,
+        isCorrect: QUESTIONS[index].answers[0] === answer,
       });
 
       setTimeout(() => {
@@ -31,17 +26,19 @@ export default function Question({
 
   let answerState = "";
 
-  if (answer.selectedAnswer) {
-    answerState === answer.isCorrect ? "correct" : "wrong";
+  if (answer.selectedAnswer && answer.isCorrect !== null) {
+    answerState = answer.isCorrect ? "correct" : "wrong";
+  } else if (answer.selectedAnswer) {
+    answerState = "answered";
   }
 
   return (
     <div id="question">
       <QuestionTimer timeout={15000} onTimeout={onSkipAnswer} />
-      <h2>{QUESTIONS[key].text}</h2>
+      <h2>{QUESTIONS[index].text}</h2>
       <Answers
-        answers={QUESTIONS[key].answers}
-        selectedAnswer={selectedAnswer}
+        answers={QUESTIONS[index].answers}
+        selectedAnswer={answer.selectedAnswer}
         answerState={answerState}
         onSelect={handleSelectAnswer}
       />
